@@ -3,6 +3,13 @@ from http.server import HTTPServer, BaseHTTPRequestHandler
 from urllib.parse import parse_qs, unquote
 import requests
 
+#The following is a mixin that is added to allow concurrency (ability to handler more than one task at time (multiple requests))
+import threading
+from socketserver import ThreadingMixIn
+
+class ThreadHTTPServer(ThreadingMixIn, HTTPServer):
+	"This is an HTTPServer that supports thread-based concurrency."
+
 mapping = {}
 
 blnk_form = """
@@ -119,5 +126,5 @@ class BookMark(BaseHTTPRequestHandler):
 if __name__ == '__main__':
 	port = int(os.environ.get('PORT', 8000))
 	server_address = ('', port)
-	httpd = HTTPServer(server_address, BookMark)
+	httpd = ThreadHTTPServer(server_address, BookMark)
 	httpd.serve_forever()
