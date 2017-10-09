@@ -9,9 +9,12 @@ blnk_form = """
 <!DOCTYPE html>
 <html>
 <head>
-	<title></title>
+	<title>JPs BookMark App</title>
 </head>
 <body>
+<h2>J-P's BookMark site</h2>
+<hr>
+<p>Sure, its pretty useless in that it doesn't have a backend, so there is no persistent data storage... yet.</p>
 	<form action = "http://localhost:8000" method = "POST">
 		<table>
 			<tr>
