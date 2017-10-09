@@ -92,24 +92,29 @@ class BookMark(BaseHTTPRequestHandler):
 		length = int(self.headers.get("Content-Length", 0))
 		data = self.rfile.read(length).decode()
 		msg = parse_qs(data)
+
+		# Check that the user submitted the form fields.
+		if "url_long" not in params or "url_shrt" not in msg:
+            self.send_response(400)
+            self.send_header('Content-type', 'text/plain; charset=utf-8')
+            self.end_headers()
+            self.wfile.write("Missing form fields!".encode())
+            return
+
 		shrt_uri = msg["url_shrt"][0]
 		lng_uri = msg["url_lng"][0]
 
-		if (shrt_uri == None) or (lng_uri == None):
-			self.send_response(404)
-			#self.send_header("Content-type", "")
+
+		if checkURI(lng_uri) == True:
+			mapping[shrt_uri] = lng_uri
+			self.send_response(303)
+			self.send_header("Location", "/")
 			self.end_headers()
 		else:
-			if checkURI(lng_uri) == True:
-				mapping[shrt_uri] = lng_uri
-				self.send_response(303)
-				self.send_header("Location", "/")
-				self.end_headers()
-			else:
-				self.send_response(404)
-				self.send_header("Content-type","text/html; charset = utf-8")
-				self.end_headers()
-				self.wfile.write(("Unfortunately, the url \" {} \", is not a valid uri").format(lng_uri).encode())
+			self.send_response(404)
+			self.send_header("Content-type","text/html; charset = utf-8")
+			self.end_headers()
+			self.wfile.write("Unfortunately, the url \" {} \", is not a valid uri".format(lng_uri).encode())
 
 if __name__ == '__main__':
 	port = int(os.environ.get('PORT', 8000))
