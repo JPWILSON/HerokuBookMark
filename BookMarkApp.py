@@ -94,12 +94,12 @@ class BookMark(BaseHTTPRequestHandler):
 		msg = parse_qs(data)
 
 		# Check that the user submitted the form fields.
-		if "url_long" not in params or "url_shrt" not in msg:
-            self.send_response(400)
-            self.send_header('Content-type', 'text/plain; charset=utf-8')
-            self.end_headers()
-            self.wfile.write("Missing form fields!".encode())
-            return
+		if "url_lng" not in msg or "url_shrt" not in msg:
+			self.send_response(400)
+			self.send_header('Content-type', 'text/plain; charset=utf-8')
+			self.end_headers()
+			self.wfile.write("Missing form fields!".encode())
+			return
 
 		shrt_uri = msg["url_shrt"][0]
 		lng_uri = msg["url_lng"][0]
